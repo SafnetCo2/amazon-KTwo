@@ -5,13 +5,24 @@ import os
 import uuid
 os.environ['DATABASE_URL'] = 'postgresql://josephine:root@localhost/shop_db'
 
+
 def seed_users():
     users = [
-        User(user_name='admin', email='admin@example.com', password_hash='hashed_password1', role='superuser', confirmed_admin=True),
-        User(user_name='clerk', email='clerk@example.com', password_hash='hashed_password2', role='clerk', confirmed_admin=False)
-    ]
+        User(
+            user_name='admin',
+            email='admin@example.com',
+            password_hash='hashed_password1',
+            role='superuser',
+            confirmed_admin=True),
+        User(
+            user_name='clerk',
+            email='clerk@example.com',
+            password_hash='hashed_password2',
+            role='clerk',
+            confirmed_admin=False)]
     db.session.add_all(users)
     db.session.commit()
+
 
 def seed_invitations():
     invitations = [
@@ -35,6 +46,7 @@ def seed_invitations():
     db.session.add_all(invitations)
     db.session.commit()
 
+
 def seed_stores():
     stores = [
         Store(store_name='Main Warehouse', location='Nairobi'),
@@ -42,6 +54,7 @@ def seed_stores():
     ]
     db.session.add_all(stores)
     db.session.commit()
+
 
 def seed_products():
     products = [
@@ -51,13 +64,26 @@ def seed_products():
     db.session.add_all(products)
     db.session.commit()
 
+
 def seed_inventory():
     inventory_items = [
-        Inventory(product_id=1, store_id=1, quantity_received=100, quantity_in_stock=100, quantity_spoilt=0, payment_status='paid'),
-        Inventory(product_id=2, store_id=2, quantity_received=200, quantity_in_stock=180, quantity_spoilt=20, payment_status='not paid')
-    ]
+        Inventory(
+            product_id=1,
+            store_id=1,
+            quantity_received=100,
+            quantity_in_stock=100,
+            quantity_spoilt=0,
+            payment_status='paid'),
+        Inventory(
+            product_id=2,
+            store_id=2,
+            quantity_received=200,
+            quantity_in_stock=180,
+            quantity_spoilt=20,
+            payment_status='not paid')]
     db.session.add_all(inventory_items)
     db.session.commit()
+
 
 def seed_supply_requests():
     supply_requests = [
@@ -67,14 +93,22 @@ def seed_supply_requests():
     db.session.add_all(supply_requests)
     db.session.commit()
 
+
 def seed_payments():
-    payments = [
-        {'supplier_name': 'Supplier1', 'invoice_number': 'INV001', 'amount': 1500, 'payment_date': datetime.now(), 'payment_status': 'paid'},
-        {'supplier_name': 'Supplier2', 'invoice_number': 'INV002', 'amount': 3000, 'payment_date': datetime.now(), 'payment_status': 'not paid'}
-    ]
+    payments = [{'supplier_name': 'Supplier1',
+                 'invoice_number': 'INV001',
+                 'amount': 1500,
+                 'payment_date': datetime.now(),
+                 'payment_status': 'paid'},
+                {'supplier_name': 'Supplier2',
+                 'invoice_number': 'INV002',
+                 'amount': 3000,
+                 'payment_date': datetime.now(),
+                 'payment_status': 'not paid'}]
 
     db.session.bulk_insert_mappings(Payment, payments)
     db.session.commit()
+
 
 def main():
     app = create_app()  # Create the Flask application instance
@@ -88,11 +122,6 @@ def main():
         seed_supply_requests()
         seed_payments()
 
+
 if __name__ == "__main__":
     main()
-
-
-
-
-
-

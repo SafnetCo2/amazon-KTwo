@@ -2,11 +2,14 @@ from flask import current_app as app, request, jsonify
 from app import db
 from app.models import User, Invitation, Store, Product, Inventory, SupplyRequest, Payment
 import uuid
+
+
 @app.route('/', methods=['GET'])
 def home():
     return "Welcome to Josys Shop!"
 
 # User Routes
+
 
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -17,6 +20,8 @@ def get_users():
         "message": "Users retrieved successfully",
         "data": users_data
     })
+
+
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     user = User.query.get_or_404(user_id)
@@ -25,6 +30,7 @@ def get_user(user_id):
         "message": "User retrieved successfully",
         "data": user.to_dict()
     })
+
 
 @app.route('/users', methods=['POST'])
 def create_user():
@@ -41,6 +47,7 @@ def create_user():
     db.session.commit()
     return jsonify(user.to_dict()), 201
 
+
 @app.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     user = User.query.get_or_404(user_id)
@@ -54,6 +61,7 @@ def update_user(user_id):
     db.session.commit()
     return jsonify(user.to_dict())
 
+
 @app.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
@@ -62,16 +70,19 @@ def delete_user(user_id):
     return '', 204
 
 # Invitation Routes
+
+
 @app.route('/invitations', methods=['GET'])
 def get_invitations():
     invitations = Invitation.query.all()
-    invitations_data=[invitation.to_dict() for invitation in invitations]
+    invitations_data = [invitation.to_dict() for invitation in invitations]
     return jsonify({
         "status": "success",
         "message": "Invitations retrieved successfully",
         "data": invitations_data
-        
+
     })
+
 
 @app.route('/invitations/<int:invitation_id>', methods=['GET'])
 def get_invitation(invitation_id):
@@ -80,12 +91,8 @@ def get_invitation(invitation_id):
         "status": "success",
         "message": "invitation retrieved successfully",
         "data": invitation.to_dict()
-        
+
     })
-
-
-
-
 
 
 @app.route('/invitations', methods=['POST'])
@@ -102,6 +109,7 @@ def create_invitation():
     db.session.commit()
     return jsonify(invitation.to_dict()), 201
 
+
 @app.route('/invitations/<int:invitation_id>', methods=['PUT'])
 def update_invitation(invitation_id):
     invitation = Invitation.query.get_or_404(invitation_id)
@@ -114,6 +122,7 @@ def update_invitation(invitation_id):
     db.session.commit()
     return jsonify(invitation.to_dict())
 
+
 @app.route('/invitations/<int:invitation_id>', methods=['DELETE'])
 def delete_invitation(invitation_id):
     invitation = Invitation.query.get_or_404(invitation_id)
@@ -122,15 +131,19 @@ def delete_invitation(invitation_id):
     return '', 204
 
 # Store Routes
+
+
 @app.route('/stores', methods=['GET'])
 def get_stores():
     stores = Store.query.all()
     return jsonify([store.to_dict() for store in stores])
 
+
 @app.route('/stores/<int:store_id>', methods=['GET'])
 def get_store(store_id):
     store = Store.query.get_or_404(store_id)
     return jsonify(store.to_dict())
+
 
 @app.route('/stores', methods=['POST'])
 def create_store():
@@ -143,6 +156,7 @@ def create_store():
     db.session.commit()
     return jsonify(store.to_dict()), 201
 
+
 @app.route('/stores/<int:store_id>', methods=['PUT'])
 def update_store(store_id):
     store = Store.query.get_or_404(store_id)
@@ -152,6 +166,7 @@ def update_store(store_id):
     db.session.commit()
     return jsonify(store.to_dict())
 
+
 @app.route('/stores/<int:store_id>', methods=['DELETE'])
 def delete_store(store_id):
     store = Store.query.get_or_404(store_id)
@@ -160,15 +175,19 @@ def delete_store(store_id):
     return '', 204
 
 # Product Routes
+
+
 @app.route('/products', methods=['GET'])
 def get_products():
     products = Product.query.all()
     return jsonify([product.to_dict() for product in products])
 
+
 @app.route('/products/<int:product_id>', methods=['GET'])
 def get_product(product_id):
     product = Product.query.get_or_404(product_id)
     return jsonify(product.to_dict())
+
 
 @app.route('/products', methods=['POST'])
 def create_product():
@@ -182,6 +201,7 @@ def create_product():
     db.session.commit()
     return jsonify(product.to_dict()), 201
 
+
 @app.route('/products/<int:product_id>', methods=['PUT'])
 def update_product(product_id):
     product = Product.query.get_or_404(product_id)
@@ -192,6 +212,7 @@ def update_product(product_id):
     db.session.commit()
     return jsonify(product.to_dict())
 
+
 @app.route('/products/<int:product_id>', methods=['DELETE'])
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
@@ -200,15 +221,19 @@ def delete_product(product_id):
     return '', 204
 
 # Inventory Routes
+
+
 @app.route('/inventory', methods=['GET'])
 def get_inventory():
     inventory = Inventory.query.all()
     return jsonify([item.to_dict() for item in inventory])
 
+
 @app.route('/inventory/<int:inventory_id>', methods=['GET'])
 def get_inventory_item(inventory_id):
     item = Inventory.query.get_or_404(inventory_id)
     return jsonify(item.to_dict())
+
 
 @app.route('/inventory', methods=['POST'])
 def create_inventory_item():
@@ -225,18 +250,22 @@ def create_inventory_item():
     db.session.commit()
     return jsonify(item.to_dict()), 201
 
+
 @app.route('/inventory/<int:inventory_id>', methods=['PUT'])
 def update_inventory_item(inventory_id):
     item = Inventory.query.get_or_404(inventory_id)
     data = request.get_json()
     item.product_id = data.get('product_id', item.product_id)
     item.store_id = data.get('store_id', item.store_id)
-    item.quantity_received = data.get('quantity_received', item.quantity_received)
-    item.quantity_in_stock = data.get('quantity_in_stock', item.quantity_in_stock)
+    item.quantity_received = data.get(
+        'quantity_received', item.quantity_received)
+    item.quantity_in_stock = data.get(
+        'quantity_in_stock', item.quantity_in_stock)
     item.quantity_spoilt = data.get('quantity_spoilt', item.quantity_spoilt)
     item.payment_status = data.get('payment_status', item.payment_status)
     db.session.commit()
     return jsonify(item.to_dict())
+
 
 @app.route('/inventory/<int:inventory_id>', methods=['DELETE'])
 def delete_inventory_item(inventory_id):
@@ -246,15 +275,19 @@ def delete_inventory_item(inventory_id):
     return '', 204
 
 # Supply Request Routes
+
+
 @app.route('/supply_requests', methods=['GET'])
 def get_supply_requests():
     requests = SupplyRequest.query.all()
     return jsonify([req.to_dict() for req in requests])
 
+
 @app.route('/supply_requests/<int:supply_request_id>', methods=['GET'])
 def get_supply_request(supply_request_id):
     request = SupplyRequest.query.get_or_404(supply_request_id)
     return jsonify(request.to_dict())
+
 
 @app.route('/supply_requests', methods=['POST'])
 def create_supply_request():
@@ -270,17 +303,20 @@ def create_supply_request():
     db.session.commit()
     return jsonify(request.to_dict()), 201
 
+
 @app.route('/supply_requests/<int:supply_request_id>', methods=['PUT'])
 def update_supply_request(supply_request_id):
     request = SupplyRequest.query.get_or_404(supply_request_id)
     data = request.get_json()
     request.product_id = data.get('product_id', request.product_id)
     request.store_id = data.get('store_id', request.store_id)
-    request.quantity_requested = data.get('quantity_requested', request.quantity_requested)
+    request.quantity_requested = data.get(
+        'quantity_requested', request.quantity_requested)
     request.request_date = data.get('request_date', request.request_date)
     request.status = data.get('status', request.status)
     db.session.commit()
     return jsonify(request.to_dict())
+
 
 @app.route('/supply_requests/<int:supply_request_id>', methods=['DELETE'])
 def delete_supply_request(supply_request_id):
@@ -290,15 +326,19 @@ def delete_supply_request(supply_request_id):
     return '', 204
 
 # Payment Routes
+
+
 @app.route('/payments', methods=['GET'])
 def get_payments():
     payments = Payment.query.all()
     return jsonify([payment.to_dict() for payment in payments])
 
+
 @app.route('/payments/<int:payment_id>', methods=['GET'])
 def get_payment(payment_id):
     payment = Payment.query.get_or_404(payment_id)
     return jsonify(payment.to_dict())
+
 
 @app.route('/payments', methods=['POST'])
 def create_payment():
@@ -312,6 +352,7 @@ def create_payment():
     db.session.commit()
     return jsonify(payment.to_dict()), 201
 
+
 @app.route('/payments/<int:payment_id>', methods=['PUT'])
 def update_payment(payment_id):
     payment = Payment.query.get_or_404(payment_id)
@@ -321,6 +362,7 @@ def update_payment(payment_id):
     payment.payment_method = data.get('payment_method', payment.payment_method)
     db.session.commit()
     return jsonify(payment.to_dict())
+
 
 @app.route('/payments/<int:payment_id>', methods=['DELETE'])
 def delete_payment(payment_id):

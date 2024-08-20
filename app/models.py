@@ -1,6 +1,7 @@
 from datetime import datetime
 from app import db
 
+
 class User(db.Model):
     __tablename__ = 'users'
     user_id = db.Column(db.Integer, primary_key=True)
@@ -11,9 +12,9 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     confirmed_admin = db.Column(db.Boolean, default=False)  # Update type here
 
-
     invitations = db.relationship('Invitation', backref='user', lazy=True)
-    supply_requests = db.relationship('SupplyRequest', backref='user', lazy=True)
+    supply_requests = db.relationship(
+        'SupplyRequest', backref='user', lazy=True)
 
     def to_dict(self):
         return {
@@ -25,6 +26,7 @@ class User(db.Model):
             "confirmed_admin": self.confirmed_admin
         }
 
+
 class Invitation(db.Model):
     __tablename__ = 'invitations'
     invitation_id = db.Column(db.Integer, primary_key=True)
@@ -33,7 +35,10 @@ class Invitation(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     expiry_date = db.Column(db.DateTime, nullable=False)
     is_used = db.Column(db.Boolean, default=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.user_id'),
+        nullable=True)
 
     def to_dict(self):
         return {
@@ -44,6 +49,7 @@ class Invitation(db.Model):
             "expiry_date": self.expiry_date,
             "is_used": self.is_used
         }
+
 
 class Store(db.Model):
     __tablename__ = 'stores'
@@ -59,6 +65,7 @@ class Store(db.Model):
             "store_name": self.store_name,
             "location": self.location
         }
+
 
 class Product(db.Model):
     __tablename__ = 'products'
@@ -77,17 +84,25 @@ class Product(db.Model):
             "selling_price": self.selling_price
         }
 
+
 class Inventory(db.Model):
     __tablename__ = 'inventory'
     inventory_id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.product_id'), nullable=False)
-    store_id = db.Column(db.Integer, db.ForeignKey('stores.store_id'), nullable=False)
+    product_id = db.Column(
+        db.Integer,
+        db.ForeignKey('products.product_id'),
+        nullable=False)
+    store_id = db.Column(
+        db.Integer,
+        db.ForeignKey('stores.store_id'),
+        nullable=False)
     quantity_received = db.Column(db.Integer, nullable=False)
     quantity_in_stock = db.Column(db.Integer, nullable=False)
     quantity_spoilt = db.Column(db.Integer, nullable=False)
     payment_status = db.Column(db.String(10), nullable=False)
 
-    supply_requests = db.relationship('SupplyRequest', backref='inventory', lazy=True)
+    supply_requests = db.relationship(
+        'SupplyRequest', backref='inventory', lazy=True)
 
     def to_dict(self):
         return {
@@ -100,11 +115,18 @@ class Inventory(db.Model):
             "payment_status": self.payment_status
         }
 
+
 class SupplyRequest(db.Model):
     __tablename__ = 'supply_requests'
     request_id = db.Column(db.Integer, primary_key=True)
-    inventory_id = db.Column(db.Integer, db.ForeignKey('inventory.inventory_id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    inventory_id = db.Column(
+        db.Integer,
+        db.ForeignKey('inventory.inventory_id'),
+        nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.user_id'),
+        nullable=False)
     request_date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(10), nullable=False)
 
@@ -116,6 +138,7 @@ class SupplyRequest(db.Model):
             "request_date": self.request_date,
             "status": self.status
         }
+
 
 class Payment(db.Model):
     __tablename__ = 'payments'

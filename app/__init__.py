@@ -11,18 +11,19 @@ load_dotenv()
 db = SQLAlchemy()
 migrate = Migrate()
 
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object('app.config.Config')
 
     # Print the DATABASE_URL to check if it's set
     print("DATABASE_URL:", os.getenv('DATABASE_URL'))
-    
+
     CORS(app)
     db.init_app(app)
     migrate.init_app(app, db)
-    
+
     with app.app_context():
         from . import routes  # Import routes here to register them
-    
+
     return app
