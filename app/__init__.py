@@ -15,7 +15,7 @@ migrate = Migrate()
 def create_app():
     app = Flask(__name__)
     app.config.from_object('app.config.Config')
-
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     # Print the DATABASE_URL to check if it's set
     print("DATABASE_URL:", os.getenv('DATABASE_URL'))
 
