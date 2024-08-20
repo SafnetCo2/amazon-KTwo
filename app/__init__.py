@@ -14,10 +14,15 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('app.config.Config')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-    app.config['APP_ENV'] = os.getenv('APP_ENV')
+    # app.config.from_object('app.config.Config')
+    # app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    # app.config['APP_ENV'] = os.getenv('APP_ENV')
     # Print the DATABASE_URL to check if it's set
+    
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config['DEBUG'] = True if os.getenv('APP_ENV') == 'development' else False
+
     print("DATABASE_URL:", os.getenv('DATABASE_URL'))
 
     CORS(app)
