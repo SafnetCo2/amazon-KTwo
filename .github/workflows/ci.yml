@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +26,35 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    # Optional: Linting
+    - name: Run Linting (flake8)
+      run: |
+        pip install flake8
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      continue-on-error: true  # If you don't want the build to fail on lint errors
+
+    # Optional: Code Coverage
+    - name: Run tests with coverage
+      run: |
+        pip install pytest-cov
+        pytest --cov=your_module_name
+      env:
+        CI: true
+
+    # Optional: Check code formatting with black
+    - name: Check formatting with black
+      run: |
+        pip install black
+        black --check .
+
+    # Run the tests
     - name: Run tests
       run: |
         pytest
+
+    # Optional: Upload coverage report (if using code coverage)
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: ./htmlcov  # Adjust this if you store the coverage report elsewhere
