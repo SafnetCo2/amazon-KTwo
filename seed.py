@@ -3,8 +3,8 @@ from app.models import User, Invitation, Store, Product, Inventory, SupplyReques
 from datetime import datetime, timedelta
 import os
 import uuid
-os.environ['DATABASE_URL']='postgresql://shop_db_bims_user:iLbOPKnmEuTCEVsyrMz3YlKdIO4QQ0Tk@dpg-cr27m0ggph6c73bhq75g-a.frankfurt-postgres.render.com:5432/shop_db_bims?sslmode=require'
-#os.environ['DATABASE_URL'] = 'postgresql://josephine:root@localhost/shop_db'
+# os.environ['DATABASE_URL']='postgresql://shop_db_bims_user:iLbOPKnmEuTCEVsyrMz3YlKdIO4QQ0Tk@dpg-cr27m0ggph6c73bhq75g-a.frankfurt-postgres.render.com:5432/shop_db_bims?sslmode=require'
+#os.environ['DATABASE_URL'] = 'postgresql://josephine:root@localhost/shop_dba'
 os.environ['DATABASE_URL']='postgresql://shop_dba_user:sXGgw95MzKbuywH6bQ4EPDcgzDoxZPjp@dpg-crq19q56l47c73artj2g-a.frankfurt-postgres.render.com/shop_dba'
 
 def seed_users():
