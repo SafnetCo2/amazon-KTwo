@@ -11,19 +11,15 @@ load_dotenv()
 db = SQLAlchemy()
 migrate = Migrate()
 
-
 def create_app():
     app = Flask(__name__)
-    # app.config.from_object('app.config.Config')
-    # app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-    # app.config['APP_ENV'] = os.getenv('APP_ENV')
-    # Print the DATABASE_URL to check if it's set
-    
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+
+    # Load configurations
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')  # Ensure this is correctly set
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['DEBUG'] = True if os.getenv('APP_ENV') == 'development' else False
 
-    print("DATABASE_URL:", os.getenv('DATABASE_URL'))
+    print("DATABASE_URL:", app.config['SQLALCHEMY_DATABASE_URI'])  # Check what is being loaded
 
     CORS(app)
     db.init_app(app)
