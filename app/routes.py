@@ -3,7 +3,7 @@ from flask_cors import CORS
 from app import db
 from app.models import User, Invitation, Store, Product, Inventory, SupplyRequest, Payment
 import uuid
-
+import bcrypt
 # Enable CORS for all routes
 CORS(app)
 
@@ -32,21 +32,49 @@ def get_user(user_id):
         "data": user.to_dict()
     })
 
+# Password hashing function
+def hash_password(password):
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
 @app.route('/users', methods=['POST'])
 def create_user():
     data = request.get_json()
-    user = User(
+
+    # Check for required fields in the incoming data
+    required_fields = ['user_name', 'email', 'password', 'role', 'is_active', 'confirmed_admin']
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"status": "error", "message": f"{field} is required"}), 400
+
+    # Extract and hash the password
+    password = data['password']
+    password_hash = hash_password(password)
+
+    # Create a new user
+    new_user = User(
         user_name=data['user_name'],
         email=data['email'],
-        password_hash=data['password_hash'],
+        password_hash=password_hash,
         role=data['role'],
-        is_active=data.get('is_active', True),
+        is_active=data['is_active'],
         confirmed_admin=data['confirmed_admin']
     )
-    db.session.add(user)
-    db.session.commit()
-    return jsonify(user.to_dict()), 201
 
+    # Save the user to the database
+    db.session.add(new_user)
+    db.session.commit()
+    
+    # Prepare the response structure including user_id
+    response_data = {
+        "user_id": new_user.user_id,
+        "confirmed_admin": new_user.confirmed_admin,
+        "email": new_user.email,
+        "is_active": new_user.is_active,
+        "role": new_user.role,
+        "user_name": new_user.user_name
+    }
+    
+    return jsonify({"status": "success", "data": response_data}), 201
 @app.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     user = User.query.get_or_404(user_id)
